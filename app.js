@@ -16,8 +16,10 @@ var campgroundsRoutes = require("./routes/campgrounds.js");
 var indexRoutes       = require("./routes/index.js");
 
 //create a database
-//mongoose.connect("mongodb://localhost/yelp_camp");
-mongoose.connect("mongodb://gellert:5917738ljh@ds013366.mlab.com:13366/yelpcamp");
+mongoose.connect(process.env.DATABASEURL);
+//mongoose.connect("mongodb://gellert:5917738ljh@ds013366.mlab.com:13366/yelpcamp");
+
+process.env.databaseURL
 
 app.use(bodyParser.urlencoded({extended:true}));
 
@@ -51,4 +53,4 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.listen(process.env.PORT || 5000);
+app.listen(process.env.PORT || 4000);
