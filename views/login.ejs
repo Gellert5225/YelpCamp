@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>YelpCamp</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="/stylesheets/main.css"
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">YelpCamp</a>
+                </div>
+            </div> 
+        </nav>
+
+        <div class="container">
+            <% if(errorFlash && errorFlash.length > 0){%>
+                <div class="alert alert-danger" role="alert">
+                    <%= errorFlash %>
+                </div>
+            <% } %>
+            <% if(successFlash && successFlash.length > 0){ %>
+                <div class="alert alert-success" role="alert">
+                    <%= successFlash %>
+                </div>
+            <% } %>
+        </div>
+        <form action="/login" method="POST">
+            <input type="text" name="username" placeholder="username">
+            <input type="password" name="password" placeholder="password">
+            <input type="submit" value="Log in">
+        </form>
+    </body>
+</html>
