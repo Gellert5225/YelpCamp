@@ -51,6 +51,4 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.listen("4000", function(){
-    console.log("server started on port 4000");
-});
+app.listen(process.env.PORT || 5000);
