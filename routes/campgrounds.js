@@ -11,7 +11,15 @@ router.get("/campgrounds", function(req,res){
         }
         else
         {
-            res.render("campgrounds/index.ejs", {campgrounds: campground, currentUser: req.user});
+            if (req.accepts('html'))
+            {
+                res.render("campgrounds/index.ejs", {campgrounds: campground, currentUser: req.user});
+            }
+            else
+            {
+                res.set('Content-Type','campgrounds/json'); //G
+                res.send(200, campground); //H
+            }
         }
     });
 });
