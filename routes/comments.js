@@ -16,6 +16,51 @@ router.get("/campgrounds/:id/comments/new", isLoggedIn, function(req, res){
     });
 });
 
+router.get("/campgrounds/:id/comments", function(req, res){
+    Campgrounds.findById(req.params.id, function(err, campground){
+        if(err)
+        {
+            console.log(err);
+        }
+        else
+        {
+            if(req.accepts('html'))
+            {
+                res.render("comments/new.ejs", {campground : campground});
+            }
+            else
+            {
+                console.log(campground);
+                res.set('Content-Type','comments/json'); //G
+                res.send(200, campground.comments); //H
+            }
+        }
+    });
+});
+
+router.get("/campgrounds/:id/comments/:comment_id", function(req, res){
+    Comment.findById(req.params.comment_id, function(err, foundComment){
+        if(err)
+        {
+            console.log(err);
+            res.redirect("back");
+        }
+        else
+        {
+            if(req.accepts('html'))
+            {
+                console.log(req.params);
+            }
+            else
+            {
+                console.log("ios comment")
+                res.set('Content-Type','comments/json');
+                res.send(200, foundComment);
+            }
+        }
+    });
+});
+
 router.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
     Campgrounds.findById(req.params.id, function(err, foundCampground){
         if(err)
@@ -43,6 +88,24 @@ router.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
                         res.redirect("/campgrounds/" + foundCampground._id);
                     }
                 });
+//            foundCampground.comments.push({
+//                text : req.body.text,
+//                author : {
+//                    id : req.user._id,
+//                    username : req.user.username
+//                }
+//            });
+//            foundCampground.save(function(err, user){
+//                if(err)
+//                {
+//                    console.log("Error");
+//                }
+//                else
+//                {
+//                    console.log(foundCampground)
+//                    res.redirect("/campgrounds/" + foundCampground._id);
+//                }
+//            });
         }
     });
 });
@@ -80,16 +143,18 @@ router.put("/campgrounds/:id/comments/:comment_id", checkCommentOwnership, funct
 });
 
 router.delete("/campgrounds/:id/comments/:comment_id", checkCommentOwnership, function(req, res){
-    Comment.findByIdAndRemove(req.params.comment_id, function(err){
-        if(err)
-        {
-            console.log(err);
-            res.redirect("/campgrounds/" + req.params.id);
-        }
-        else
-        {
-            res.redirect("/campgrounds/" + req.params.id);
-        }
+    Comment.findById(req.params.comment_id, function(err, foundComment){
+        foundComment.remove(function(err){
+            if(err)
+            {
+                console.log(err);
+                res.redirect("/campgrounds/" + req.params.id);
+            }
+            else
+            {
+                res.redirect("/campgrounds/" + req.params.id);
+            }
+        });
     });
 });
 

@@ -4,14 +4,14 @@ var router      = express.Router();
 
 router.get("/campgrounds", function(req,res){
     //get all campgrounds from DB
-    Campgrounds.find({}, function(err, campground){
+    Campgrounds.find({}).populate("comments").exec(function(err, campground){
         if(err)
         {
             console.log("err");
         }
         else
         {
-            if (req.accepts('html'))
+            if(req.accepts('html'))
             {
                 res.render("campgrounds/index.ejs", {campgrounds: campground, currentUser: req.user});
             }
@@ -61,7 +61,15 @@ router.get("/campgrounds/:id", function(req,res){
         }
         else
         {
-            res.render("campgrounds/show.ejs", {campground: foundCampground});
+            if(req.accepts('html'))
+            {
+                res.render("campgrounds/show.ejs", {campground: foundCampground});
+            }
+            else
+            {
+                res.set('Content-Type','campgrounds/json'); //G
+                res.send(200, foundCampground); //H
+            }
         }
     });
     //show CG

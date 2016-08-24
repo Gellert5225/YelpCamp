@@ -22,12 +22,12 @@ var data = [
 
 function seedDB(){
     //remove all campgrounds
-    Campgrounds.remove({}, function(err){
+    Comment.remove({}, function(err){
         if(err)
         {
             console.log(err);
         }
-        console.log("removed campgrounds");
+        console.log("removed comments");
         //create a few campgrounds
 //        data.forEach(function(seed){
 //            Campgrounds.create(seed, function(err,campground){

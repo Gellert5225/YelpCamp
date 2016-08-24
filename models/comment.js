@@ -12,4 +12,13 @@ var commentSchema = new mongoose.Schema({
     }
 });
 
+commentSchema.pre('remove', function (next) {
+    var comment = this;
+    comment.model('Campground').update(
+        { comments: comment._id }, 
+        { $pull: { comments: comment._id } }, 
+        { multi: true }, 
+        next);
+});
+
 module.exports = mongoose.model("Comment", commentSchema);
