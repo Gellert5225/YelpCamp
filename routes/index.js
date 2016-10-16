@@ -55,7 +55,7 @@ router.post("/login", passport.authenticate("local", {
                     return res.json({ SERVER_RESPONSE: 1, SERVER_MESSAGE: "Logged in!" });
                 
             });
-        })(req, res);
+        });
 
 //logout route
 router.get("/logout", function(req, res){
