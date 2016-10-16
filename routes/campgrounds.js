@@ -5,12 +5,18 @@ var router      = express.Router();
 router.get("/campgrounds", function(req,res){
     //get all campgrounds from DB
     Campgrounds.find({}).populate("comments").exec(function(err, campground){
-        if(err) {
+        if(err)
+        {
             console.log("err");
-        } else {
-            if(req.accepts('html')) {
+        }
+        else
+        {
+            if(req.accepts('html'))
+            {
                 res.render("campgrounds/index.ejs", {campgrounds: campground, currentUser: req.user});
-            } else {
+            }
+            else
+            {
                 res.set('Content-Type','campgrounds/json'); //G
                 res.send(200, campground); //H
             }
@@ -29,9 +35,12 @@ router.post("/campgrounds",isLoggedIn, function(req,res){
             username : req.user.username
         }
     }, function(err,newCG){
-        if(err) {
+        if(err)
+        {
             console.log(err);
-        } else {
+        }
+        else
+        {
             console.log(newCG.author);
             res.redirect("/campgrounds");
         }
@@ -45,13 +54,19 @@ router.get("/campgrounds/new", isLoggedIn, function(req,res){
 //show more info about CG
 router.get("/campgrounds/:id", function(req,res){
     //find CG with provided ID
-    Campgrounds.findById(req.params.id).populate("comments").exec(function(err, foundCampground) {
-        if(err) {
+    Campgrounds.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
+        if(err)
+        {
             console.log(err);
-        } else {
-            if(req.accepts('html')) {
+        }
+        else
+        {
+            if(req.accepts('html'))
+            {
                 res.render("campgrounds/show.ejs", {campground: foundCampground});
-            } else {
+            }
+            else
+            {
                 res.set('Content-Type','campgrounds/json'); //G
                 res.send(200, foundCampground); //H
             }
@@ -63,9 +78,12 @@ router.get("/campgrounds/:id", function(req,res){
 //Edit Route
 router.get("/campgrounds/:id/edit", checkCGOwnership, function(req, res){
     Campgrounds.findById(req.params.id, function(err, foundCampground){
-        if(err) {
+        if(err)
+        {
             res.redirect("back");
-        } else {
+        }
+        else
+        {
             res.render("campgrounds/edit.ejs", {campground : foundCampground});
         }
     });
@@ -79,9 +97,12 @@ router.put("/campgrounds/:id", checkCGOwnership, function(req, res){
         description : req.body.description
                    }
     Campgrounds.findByIdAndUpdate(req.params.id, CGData, function(err, updatedCG){
-        if(err) {
+        if(err)
+        {
             res.redirect("/campgrounds/" + req.params.id)
-        } else {
+        }
+        else
+        {
             res.redirect("/campgrounds/" + req.params.id);
         }
     });
@@ -90,10 +111,13 @@ router.put("/campgrounds/:id", checkCGOwnership, function(req, res){
 //Destroy Route
 router.delete("/campgrounds/:id", checkCGOwnership, function(req, res){
     Campgrounds.findByIdAndRemove(req.params.id, function(err){
-        if(err) {
+        if(err)
+        {
             req.flash("error", "Failed to find Campground");
             res.redirect("/campgrounds");
-        } else {
+        }
+        else
+        {
             req.flash("success", "Successfully deleted campground");
             res.redirect("/campgrounds");
         }
@@ -101,7 +125,8 @@ router.delete("/campgrounds/:id", checkCGOwnership, function(req, res){
 });
 
 function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()) {
+    if(req.isAuthenticated())
+    {
         return next();
     }
     req.flash("error", "Please Login First");
@@ -109,21 +134,30 @@ function isLoggedIn(req, res, next){
 }
 
 function checkCGOwnership(req, res, next){
-    if(req.isAuthenticated()) {
+    if(req.isAuthenticated())
+    {
         Campgrounds.findById(req.params.id, function(err, foundCampground){
-            if(err) {
+            if(err)
+            {
                 req.flash("error", "Failed to find Campground");
                 res.redirect("/campgrounds");
-            } else {
-                if(foundCampground.author.id.equals(req.user._id)) {
+            }
+            else
+            {
+                if(foundCampground.author.id.equals(req.user._id))
+                {
                     next();
-                } else {
+                }
+                else
+                {
                     req.flash("error", "You don't have permission to perform this action");
                     res.redirect("/campgrounds/" + req.params.id);
                 }
             }
         });
-    } else {
+    }
+    else
+    {
         req.flash("error", "Please login first");
         res.redirect("/login");
     }
