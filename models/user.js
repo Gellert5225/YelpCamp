@@ -7,7 +7,11 @@ var UserSchema = new mongoose.Schema({
     password : String
 });
 
-UserSchema.plugin(passportLocalMongoose);
+//UserSchema.plugin(passportLocalMongoose);
+
+UserSchema.methods.generateHash = function(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+};
 
 UserSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password);
