@@ -17,8 +17,7 @@ router.get("/register", function(req, res){
 router.post("/register", function(req, res){
     var newUser = new User({username: req.body.username});
     User.register(newUser, req.body.password, function(err, user){
-        if(err)
-        {
+        if(err) {
             req.flash("error", err.message);
             return res.redirect("/register");
         }
@@ -35,11 +34,28 @@ router.get("/login", function(req, res){
 });
 
 //log in logic
+//router.post("/login", passport.authenticate("local", {
+//        successRedirect : "/campgrounds",
+//        failureRedirect : "/login"
+//    }), function(req, res){
+//});
+
 router.post("/login", passport.authenticate("local", {
         successRedirect : "/campgrounds",
         failureRedirect : "/login"
-    }), function(req, res){
-});
+    }), function(err, user, info) {
+            if (err)
+                return next(err);
+            if(!user)
+                return res.status(400).json({SERVER_RESPONSE: 0, SERVER_MESSAGE: "Wrong Credentials"});
+            req.logIn(user, function(err) {
+                if (err)
+                    return next(err);
+                if (!err)
+                    return res.json({ SERVER_RESPONSE: 1, SERVER_MESSAGE: "Logged in!" });
+                
+            });
+        })(req, res);
 
 //logout route
 router.get("/logout", function(req, res){
@@ -49,8 +65,7 @@ router.get("/logout", function(req, res){
 });
 
 function isLoggedIn(req, res, next){
-    if(req.isAuthenticated())
-    {
+    if(req.isAuthenticated()) {
         return next();
     }
     req.flash("error", "Please Login First");
