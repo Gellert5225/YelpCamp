@@ -5,12 +5,9 @@ var router      = express.Router();
 
 router.get("/campgrounds/:id/comments/new", isLoggedIn, function(req, res){
     Campgrounds.findById(req.params.id, function(err, campground){
-        if(err)
-        {
+        if(err) {
             console.log(err);
-        }
-        else
-        {
+        } else {
             res.render("comments/new.ejs", {campground : campground});
         }
     });
@@ -18,18 +15,12 @@ router.get("/campgrounds/:id/comments/new", isLoggedIn, function(req, res){
 
 router.get("/campgrounds/:id/comments", function(req, res){
     Campgrounds.findById(req.params.id, function(err, campground){
-        if(err)
-        {
+        if(err) {
             console.log(err);
-        }
-        else
-        {
-            if(req.accepts('html'))
-            {
+        } else {
+            if(req.accepts('html')) {
                 res.render("comments/new.ejs", {campground : campground});
-            }
-            else
-            {
+            } else {
                 console.log(campground);
                 res.set('Content-Type','comments/json'); //G
                 res.send(200, campground.comments); //H
@@ -40,19 +31,13 @@ router.get("/campgrounds/:id/comments", function(req, res){
 
 router.get("/campgrounds/:id/comments/:comment_id", function(req, res){
     Comment.findById(req.params.comment_id, function(err, foundComment){
-        if(err)
-        {
+        if(err) {
             console.log(err);
             res.redirect("back");
-        }
-        else
-        {
-            if(req.accepts('html'))
-            {
+        } else {
+            if(req.accepts('html')) {
                 console.log(req.params);
-            }
-            else
-            {
+            } else {
                 console.log("ios comment")
                 res.set('Content-Type','comments/json');
                 res.send(200, foundComment);
@@ -63,22 +48,16 @@ router.get("/campgrounds/:id/comments/:comment_id", function(req, res){
 
 router.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
     Campgrounds.findById(req.params.id, function(err, foundCampground){
-        if(err)
-        {
+        if(err) {
             console.log(err);
             res.redirect("back");
-        }
-        else
-        {
+        } else {
             Comment.create({
                 text   : req.body.text,
             }, function(err, comment){
-                    if(err)
-                    {
+                    if(err) {
                         console.log(err);
-                    }
-                    else
-                    {
+                    } else {
                         comment.author.id = req.user._id;
                         comment.author.username = req.user.username;
                         comment.save();
@@ -112,13 +91,10 @@ router.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
 
 router.get("/campgrounds/:id/comments/:comment_id/edit", checkCommentOwnership, function(req, res){
     Comment.findById(req.params.comment_id, function(err, foundComment){
-        if(err)
-        {
+        if(err) {
             console.log(err);
             res.redirect("back");
-        }
-        else
-        {
+        } else {
             console.log(req.params);
             res.render("comments/edit.ejs", {comment : foundComment, campground_id : req.params.id});
         }
@@ -130,12 +106,9 @@ router.put("/campgrounds/:id/comments/:comment_id", checkCommentOwnership, funct
         text        : req.body.text,
                  }
     Comment.findByIdAndUpdate(req.params.comment_id, CommentData, function(err, updatedComment){
-        if(err)
-        {
+        if(err) {
             res.redirect("/campgrounds");
-        }
-        else
-        {
+        } else {
             console.log(updatedComment);
             res.redirect("/campgrounds/" + req.params.id);
         }

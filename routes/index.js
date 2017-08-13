@@ -17,8 +17,7 @@ router.get("/register", function(req, res){
 router.post("/register", function(req, res){
     var newUser = new User({username: req.body.username});
     User.register(newUser, req.body.password, function(err, user){
-        if(err)
-        {
+        if(err) {
             req.flash("error", err.message);
             return res.redirect("/register");
         }
@@ -39,7 +38,6 @@ router.post("/login", passport.authenticate("local", {
         successRedirect : "/campgrounds",
         failureRedirect : "/login"
     }), function(req, res){
-        
 });
 
 //logout route
@@ -50,8 +48,7 @@ router.get("/logout", function(req, res){
 });
 
 function isLoggedIn(req, res, next){
-    if(req.isAuthenticated())
-    {
+    if(req.isAuthenticated()) {
         return next();
     }
     req.flash("error", "Please Login First");
